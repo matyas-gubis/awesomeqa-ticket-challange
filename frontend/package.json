@@ -11,10 +11,11 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@fontsource/roboto": "^5.0.8",
     "@gelatonetwork/relay-sdk": "^5.0.0",
-    "@mui/icons-material": "^5.14.3",
+    "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.8.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "ethers": "^5.7.2",
     "keccak256": "^1.0.6",
     "next": "12.1.6",

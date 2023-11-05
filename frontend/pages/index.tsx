@@ -2,8 +2,8 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { Button } from "@mui/material";
-
+import CustomButton from "../components/CustomButton";
+import { menus } from "../constants/menus";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -13,23 +13,22 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+const cards = menus;
+
 const IndexPage = () => {
   return (
     <>
       <Box sx={{ flexGrow: 1, mt: 15, mb: 15 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ width: "50%", height: "4rem", fontSize: "1.2rem" }}
-                href="/home"
-              >
-                Home
-              </Button>
-            </Box>
-          </Grid>
+          {cards.map((card) => (
+            <Grid item xs={12} md={4} key={card.id}>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <CustomButton title={card.name} url={card.url}>
+                  {card.icon}
+                </CustomButton>
+              </Box>
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </>
