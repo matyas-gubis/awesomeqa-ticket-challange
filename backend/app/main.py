@@ -55,6 +55,12 @@ async def get_message(msg_id: str, l_ticket_repository: TicketRepository = Depen
     return JSONResponse(message, status_code=200)
 
 
+@app.get("/tickets/amount")
+async def get_ticket_amount(l_ticket_repository: TicketRepository = Depends(lambda: ticket_repository)):
+    amount = l_ticket_repository.get_ticket_amount()
+    return JSONResponse(amount, status_code=200)
+
+
 @app.get("/messages")
 async def get_messages(
         limit: int = 20,

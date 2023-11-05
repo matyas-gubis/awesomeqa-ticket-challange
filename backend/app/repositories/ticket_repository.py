@@ -62,3 +62,7 @@ class TicketRepository:
                     json.dump(self.data, json_file, indent=4)
                 return True
         return False
+
+
+    def get_ticket_amount(self) -> int:
+        return len(self.data["tickets"])
