@@ -48,15 +48,8 @@ const tickets = () => {
   }, [tickets]);
 
   useEffect(() => {
-    console.log("filter changed", filter);
+    console.log(filter);
   }, [filter]);
-
-  function getUsernames() {
-    fetch("http://localhost:5001/users/usernames")
-      .then((r) => r.json())
-      .then((result) => setUsers(result))
-      .catch((err) => console.warn(err));
-  }
 
   function loadTickets(page = 1, filters = filter) {
     axios
@@ -69,8 +62,7 @@ const tickets = () => {
       .then((result) => {
         setTickets(result.data.tickets);
         setTicketQuantity(result.data.ticket_quantity);
-      })
-      .then(getUsernames);
+      });
   }
 
   function handlePageTurn(event: ChangeEvent<unknown>, page: number): void {
@@ -83,9 +75,10 @@ const tickets = () => {
       <Filter
         filter={filter}
         setFilter={setFilter}
-        users={users}
         loadTickets={loadTickets}
       ></Filter>
+
+      {/* Pagination */}
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
@@ -98,6 +91,7 @@ const tickets = () => {
           ></Pagination>
         </Box>
       )}
+
       <Grid container spacing={2} my={3}>
         {tickets
           ? tickets.map((ticket) => (
@@ -121,6 +115,8 @@ const tickets = () => {
               </Grid>
             ))}
       </Grid>
+
+      {/* Pagination */}
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination

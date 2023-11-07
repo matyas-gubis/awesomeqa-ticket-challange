@@ -6,6 +6,10 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Stack,
   TextField,
   ToggleButton,
@@ -15,10 +19,18 @@ import {
   useTheme,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import React from "react";
-import { emptyFilter } from "../../constants/filters";
+import React, { useState } from "react";
+import {
+  emptyFilter,
+  getSortingOptionById,
+  sortingOptions,
+} from "../../constants/filters";
+import { Status } from "../../interfaces/filter";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const Filter = ({ filter, setFilter, users, loadTickets }) => {
+const Filter = ({ filter, setFilter, loadTickets }) => {
+  const [usernames, setUsernames] = useState([]);
+  const [sorting, setSorting] = useState("3");
   const theme = useTheme();
   const ContainedSecondaryToggleButton = styled(ToggleButton)(({ theme }) => ({
     color: theme.palette.secondary.main,
@@ -30,6 +42,22 @@ const Filter = ({ filter, setFilter, users, loadTickets }) => {
       backgroundColor: theme.palette.primary.main,
     },
   }));
+  function fetchUsernames() {
+    fetch("http://localhost:5001/users/usernames")
+      .then((r) => r.json())
+      .then((result) => setUsernames(result))
+      .catch((err) => console.warn(err));
+  }
+  function handleSorting(event: SelectChangeEvent): void {
+    setSorting(event.target.value);
+    let newFilters = {
+      ...filter,
+      sorting: getSortingOptionById(parseInt(event.target.value)).sorting,
+    };
+    setFilter(newFilters);
+    loadTickets(1, newFilters);
+  }
+
   return (
     <Container
       maxWidth="sm"
@@ -66,31 +94,33 @@ const Filter = ({ filter, setFilter, users, loadTickets }) => {
               defaultValue="both"
               exclusive
               onChange={(e, v) => {
-                setFilter({ ...filter, status: v });
+                let newFilters = { ...filter, status: v };
+                setFilter(newFilters);
+                loadTickets(1, newFilters);
               }}
               aria-label="Ticket status"
               sx={{ mb: 2 }}
             >
-              <ContainedSecondaryToggleButton value="open">
-                Open
-              </ContainedSecondaryToggleButton>
-              <ContainedSecondaryToggleButton value="closed">
-                Closed
-              </ContainedSecondaryToggleButton>
-              <ContainedSecondaryToggleButton value="both">
-                Both
-              </ContainedSecondaryToggleButton>
+              {(Object.keys(Status) as Array<keyof typeof Status>).map(
+                (key) => (
+                  <ContainedSecondaryToggleButton value="open" key={key}>
+                    {key}
+                  </ContainedSecondaryToggleButton>
+                )
+              )}
             </ToggleButtonGroup>
           </FormGroup>
           {
             <Autocomplete
-              id="tags-standard"
               multiple
-              options={users}
+              options={usernames}
               value={filter.usernames}
               onChange={(event, value) => {
-                setFilter({ ...filter, usernames: value });
+                let newFilters = { ...filter, usernames: value };
+                setFilter(newFilters);
+                loadTickets(1, newFilters);
               }}
+              onFocus={fetchUsernames}
               sx={{
                 minWidth: {
                   xs: "100%",
@@ -116,47 +146,85 @@ const Filter = ({ filter, setFilter, users, loadTickets }) => {
                 label="Start date"
                 value={filter.date.start}
                 onChange={(newValue: any) => {
-                  setFilter({
+                  let newFilters = {
                     ...filter,
                     date: {
                       ...filter.date,
                       start: newValue.format("YYYY-MM-DD HH:mm:ss"),
                     },
-                  });
+                  };
+                  setFilter(newFilters);
+                  loadTickets(1, newFilters);
                 }}
               />
               <DateTimePicker
                 label="End date"
                 value={filter.date.end}
                 onChange={(newValue: any) => {
-                  setFilter({
+                  let newFilters = {
                     ...filter,
                     date: {
                       ...filter.date,
                       end: newValue.format("YYYY-MM-DD HH:mm:ss"),
                     },
-                  });
+                  };
+                  setFilter(newFilters);
+                  loadTickets(1, newFilters);
                 }}
               />
             </Stack>
           </FormGroup>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label" color="secondary">
+              Sort by
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={sorting}
+              label="Age"
+              color="secondary"
+              onChange={handleSorting}
+            >
+              {sortingOptions.map((opt) => (
+                <MenuItem key={opt.id} value={opt.id}>
+                  {opt.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label" color="secondary">
+              Tickets/page
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={sorting}
+              label="Age"
+              color="secondary"
+              onChange={handleSorting}
+            >
+              {sortingOptions.map((opt) => (
+                <MenuItem key={opt.id} value={opt.id}>
+                  {opt.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl> */}
           <Stack spacing={2}>
             <Button
               variant="outlined"
               color="secondary"
               onClick={() => {
                 setFilter(emptyFilter);
+                setSorting("3");
                 loadTickets(1, emptyFilter);
               }}
+              startIcon={<DeleteIcon />}
+              size="large"
             >
               Reset filters
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => loadTickets(1, filter)}
-            >
-              Filter tickets
             </Button>
           </Stack>
         </FormControl>

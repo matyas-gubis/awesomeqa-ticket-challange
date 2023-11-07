@@ -38,6 +38,18 @@ def date_filter(tickets: dict, date: Date) -> list[dict]:
     return new_tickets
 
 
+def ticket_sorter(detailed_tickets, field_name, reverse) -> list[dict]:
+    match field_name:
+        case "date":
+            return sorted(detailed_tickets, key=lambda t: t['timestamp'], reverse=reverse)
+        case "username":
+            return sorted(detailed_tickets, key=lambda t: t['main_message']['author']['name'], reverse=reverse)
+        case "status":
+            return sorted(detailed_tickets, key=lambda t: t['status'], reverse=reverse)
+        case _:
+            return detailed_tickets
+
+
 class TicketRepository:
     def __init__(self, filepath: str):
         self.filepath = filepath
@@ -68,7 +80,9 @@ class TicketRepository:
                 print(filters.date.start)
                 response["tickets"] = date_filter(response["tickets"], filters.date)
         response["ticket_quantity"] = len(response["tickets"])
-        response["tickets"] = response["tickets"][start:start+limit]
+        response["tickets"] = ticket_sorter(response["tickets"],
+                                            filters.sorting.field_name,
+                                            filters.sorting.reversed)[start:start+limit]
         return response
 
     def get_message_by_id(self, msg_id: str) -> dict:
