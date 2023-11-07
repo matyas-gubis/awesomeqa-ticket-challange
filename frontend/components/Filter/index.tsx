@@ -24,11 +24,12 @@ import {
   emptyFilter,
   getSortingOptionById,
   sortingOptions,
+  ticketsPerPage,
 } from "../../constants/filters";
 import { Status } from "../../interfaces/filter";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const Filter = ({ filter, setFilter, loadTickets }) => {
+const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
   const [usernames, setUsernames] = useState([]);
   const [sorting, setSorting] = useState("3");
   const theme = useTheme();
@@ -55,7 +56,6 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
       sorting: getSortingOptionById(parseInt(event.target.value)).sorting,
     };
     setFilter(newFilters);
-    loadTickets(1, newFilters);
   }
 
   return (
@@ -94,9 +94,7 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
               defaultValue="both"
               exclusive
               onChange={(e, v) => {
-                let newFilters = { ...filter, status: v };
-                setFilter(newFilters);
-                loadTickets(1, newFilters);
+                setFilter({ ...filter, status: v });
               }}
               aria-label="Ticket status"
               sx={{ mb: 2 }}
@@ -115,11 +113,9 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
               multiple
               options={usernames}
               value={filter.usernames}
-              onChange={(event, value) => {
-                let newFilters = { ...filter, usernames: value };
-                setFilter(newFilters);
-                loadTickets(1, newFilters);
-              }}
+              onChange={(event, value) =>
+                setFilter({ ...filter, usernames: value })
+              }
               onFocus={fetchUsernames}
               sx={{
                 minWidth: {
@@ -154,7 +150,6 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
                     },
                   };
                   setFilter(newFilters);
-                  loadTickets(1, newFilters);
                 }}
               />
               <DateTimePicker
@@ -169,20 +164,19 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
                     },
                   };
                   setFilter(newFilters);
-                  loadTickets(1, newFilters);
                 }}
               />
             </Stack>
           </FormGroup>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label" color="secondary">
+          <FormControl fullWidth sx={{ mb: 4 }}>
+            <InputLabel id="sort-by-label" color="secondary">
               Sort by
             </InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
+              labelId="sort-by-label"
+              id="sort-by-select"
               value={sorting}
-              label="Age"
+              label="Sort by"
               color="secondary"
               onChange={handleSorting}
             >
@@ -193,25 +187,25 @@ const Filter = ({ filter, setFilter, loadTickets }) => {
               ))}
             </Select>
           </FormControl>
-          {/* <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label" color="secondary">
+          <FormControl fullWidth>
+            <InputLabel id="tickets-per-page-label" color="secondary">
               Tickets/page
             </InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={sorting}
-              label="Age"
+              labelId="tickets-per-page-label"
+              id="tickets-per-page"
+              value={pageSize}
+              label="Tickets/page"
               color="secondary"
-              onChange={handleSorting}
+              onChange={(e) => setPageSize(e.target.value)}
             >
-              {sortingOptions.map((opt) => (
-                <MenuItem key={opt.id} value={opt.id}>
-                  {opt.name}
+              {ticketsPerPage.map((tpp: number) => (
+                <MenuItem key={tpp} value={tpp}>
+                  {tpp}
                 </MenuItem>
               ))}
             </Select>
-          </FormControl> */}
+          </FormControl>
           <Stack spacing={2}>
             <Button
               variant="outlined"

@@ -29,10 +29,8 @@ const tickets = () => {
   const [tickets, setTickets] = useState(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
-  const [users, setUsers] = useState([]);
+  const [ticketPerPage, setTicketPerPage] = useState(20);
   const [filter, setFilter] = useState(emptyFilter);
-  const theme = useTheme();
   const dummies = [
     { id: 1 },
     { id: 2 },
@@ -48,26 +46,23 @@ const tickets = () => {
   }, [tickets]);
 
   useEffect(() => {
-    console.log(filter);
-  }, [filter]);
+    loadTickets();
+    console.log(filter, ticketPerPage);
+  }, [filter, ticketPerPage, currentPage]);
 
-  function loadTickets(page = 1, filters = filter) {
+  function loadTickets() {
     axios
       .post(
         `http://localhost:5001/tickets/details?start=${
-          pageSize * (page - 1)
-        }&limit=${pageSize}`,
-        filters
+          ticketPerPage * (currentPage - 1)
+        }&limit=${ticketPerPage}`,
+        filter
       )
       .then((result) => {
+        console.log(result.data);
         setTickets(result.data.tickets);
         setTicketQuantity(result.data.ticket_quantity);
       });
-  }
-
-  function handlePageTurn(event: ChangeEvent<unknown>, page: number): void {
-    setCurrentPage(page);
-    loadTickets(page, filter);
   }
 
   return (
@@ -76,18 +71,20 @@ const tickets = () => {
         filter={filter}
         setFilter={setFilter}
         loadTickets={loadTickets}
+        pageSize={ticketPerPage}
+        setPageSize={setTicketPerPage}
       ></Filter>
 
       {/* Pagination */}
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
-            count={Math.ceil(ticketQuantity / pageSize)}
+            count={Math.ceil(ticketQuantity / ticketPerPage)}
             color="secondary"
             showFirstButton
             showLastButton
             page={currentPage}
-            onChange={handlePageTurn}
+            onChange={(e, page) => setCurrentPage(page)}
           ></Pagination>
         </Box>
       )}
@@ -120,12 +117,12 @@ const tickets = () => {
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
-            count={Math.round(ticketQuantity / pageSize)}
+            count={Math.ceil(ticketQuantity / ticketPerPage)}
             color="secondary"
             showFirstButton
             showLastButton
             page={currentPage}
-            onChange={handlePageTurn}
+            onChange={(e, page) => setCurrentPage(page)}
           ></Pagination>
         </Box>
       )}

@@ -51,3 +51,5 @@ export const emptyFilter: Filters = {
   },
   sorting: getSortingOptionById(3).sorting,
 };
+
+export const ticketsPerPage: Array<number> = [1, 5, 10, 20, 50, 100];
