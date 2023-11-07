@@ -13,8 +13,6 @@ def username_filter(tickets: dict, usernames: list[str]) -> list[dict]:
     for ticket in tickets:
         if ticket["main_message"]["author"]["name"] in usernames:
             new_tickets.append(ticket)
-
-    print(filter(lambda t: True if t["main_message"]["author"]["name"] in usernames else False, tickets))
     return new_tickets
 
 
@@ -22,7 +20,6 @@ def status_filter(tickets: dict, status: str) -> list[dict]:
     new_tickets = []
     for ticket in tickets:
         if ticket["status"] == status:
-            print(ticket["status"])
             new_tickets.append(ticket)
     return new_tickets
 
@@ -86,7 +83,6 @@ class TicketRepository:
             if filters.status != "both":
                 response["tickets"] = status_filter(response["tickets"], filters.status)
             if filters.date.start or filters.date.end:
-                print(filters.date.start)
                 response["tickets"] = date_filter(response["tickets"], filters.date)
 
         if search is not None and search != "":

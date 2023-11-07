@@ -1,27 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Grid,
-  Pagination,
-  Skeleton,
-  Stack,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-  styled,
-  useTheme,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Pagination, Skeleton } from "@mui/material";
 import MessageCard from "../../components/MessageCard";
 import axios from "axios";
-import { DateTimePicker } from "@mui/x-date-pickers";
 import Filter from "../../components/Filter";
 import { emptyFilter } from "../../constants/filters";
 
@@ -32,6 +12,7 @@ const tickets = () => {
   const [ticketPerPage, setTicketPerPage] = useState(20);
   const [filter, setFilter] = useState(emptyFilter);
   const [search, setSearch] = useState("");
+  let timer;
   const dummies = [
     { id: 1 },
     { id: 2 },
@@ -48,7 +29,6 @@ const tickets = () => {
 
   useEffect(() => {
     loadTickets();
-    console.log(filter, ticketPerPage);
   }, [filter, ticketPerPage, currentPage, search]);
 
   function loadTickets() {
@@ -63,6 +43,9 @@ const tickets = () => {
         console.log(result.data);
         setTickets(result.data.tickets);
         setTicketQuantity(result.data.ticket_quantity);
+        if (currentPage > Math.ceil(ticketQuantity / ticketPerPage)) {
+          setCurrentPage(1);
+        }
       });
   }
 
@@ -98,6 +81,7 @@ const tickets = () => {
                 <MessageCard
                   ticket={ticket}
                   ticketLoader={loadTickets}
+                  search={search}
                 ></MessageCard>
               </Grid>
             ))

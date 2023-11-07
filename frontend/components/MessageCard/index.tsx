@@ -28,7 +28,7 @@ import axios from "axios";
 import { getSnackBarById } from "../../constants/snackBars";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 
-const MessageCard = ({ ticket, ticketLoader }) => {
+const MessageCard = ({ ticket, ticketLoader, search }) => {
   const message = ticket.main_message;
   const theme = useTheme();
   const [snackBar, setSnackBar] = useState({
@@ -75,14 +75,6 @@ const MessageCard = ({ ticket, ticketLoader }) => {
         pending = false;
         setSnackBar(getSnackBarById(6));
       });
-  }
-
-  function handleDeleteClicked(): void {
-    setDialogOpen(true);
-  }
-
-  function handleDialogClose(): void {
-    setDialogOpen(false);
   }
 
   function handleDeletion(): void {
@@ -190,6 +182,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
       </Box>
       {/* End of header */}
       {/* Start of body */}
+
       <Typography
         variant="body1"
         sx={{
@@ -205,6 +198,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
       >
         {message.content}
       </Typography>
+
       {/* End of body */}
       {/* Start of footer */}
       <Box
@@ -250,7 +244,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
           variant={ticket.status == "open" ? "contained" : "outlined"}
           color="secondary"
           startIcon={<DeleteOutlineIcon />}
-          onClick={handleDeleteClicked}
+          onClick={() => setDialogOpen(true)}
         >
           Delete
         </Button>
@@ -341,7 +335,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
       </Snackbar>
       <Dialog
         open={dialogOpen}
-        onClose={handleDialogClose}
+        onClose={() => setDialogOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -358,7 +352,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleDialogClose}
+            onClick={() => setDialogOpen(false)}
           >
             Cancel deletion
           </Button>
