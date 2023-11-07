@@ -13,6 +13,8 @@ def username_filter(tickets: dict, usernames: list[str]) -> list[dict]:
     for ticket in tickets:
         if ticket["main_message"]["author"]["name"] in usernames:
             new_tickets.append(ticket)
+
+    print(filter(lambda t: True if t["main_message"]["author"]["name"] in usernames else False, tickets))
     return new_tickets
 
 
@@ -49,9 +51,9 @@ class TicketRepository:
             self,
             start: Optional[int] = 0,
             limit: Optional[int] = None,
-            filters: Optional[Filters] = None) -> list[dict]:
-        new_tickets = copy.deepcopy(self.data["tickets"])
-        for ticket in new_tickets:
+            filters: Optional[Filters] = None) -> dict:
+        response = {"tickets": copy.deepcopy(self.data["tickets"])}
+        for ticket in response["tickets"]:
             ticket["main_message"] = self.get_message_by_id(ticket["msg_id"])
             ticket["detailed_context_messages"] = []
             for message in ticket["context_messages"]:
@@ -59,13 +61,15 @@ class TicketRepository:
 
         if filters is not None:
             if filters.usernames and len(filters.usernames) > 0:
-                new_tickets = username_filter(new_tickets, filters.usernames)
+                response["tickets"] = username_filter(response["tickets"], filters.usernames)
             if filters.status != "both":
-                new_tickets = status_filter(new_tickets, filters.status)
+                response["tickets"] = status_filter(response["tickets"], filters.status)
             if filters.date.start or filters.date.end:
                 print(filters.date.start)
-                new_tickets = date_filter(new_tickets, filters.date)
-        return new_tickets[start: start + limit]
+                response["tickets"] = date_filter(response["tickets"], filters.date)
+        response["ticket_quantity"] = len(response["tickets"])
+        response["tickets"] = response["tickets"][start:start+limit]
+        return response
 
     def get_message_by_id(self, msg_id: str) -> dict:
         for message in self.data["messages"]:

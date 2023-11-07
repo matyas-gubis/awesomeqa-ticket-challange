@@ -25,7 +25,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 
 const tickets = () => {
   const [tickets, setTickets] = useState(null);
-  const [pageCount, setPageCount] = useState(1);
+  const [ticketQuantity, setTicketQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [users, setUsers] = useState([]);
@@ -62,8 +62,6 @@ const tickets = () => {
   useEffect(() => {
     if (tickets) return;
     loadTickets();
-    fetchAmountOfTickets();
-    getUsernames();
   }, [tickets]);
 
   useEffect(() => {
@@ -86,15 +84,10 @@ const tickets = () => {
         filters
       )
       .then((result) => {
-        setTickets(result.data);
-        getUsernames();
-      });
-  }
-
-  function fetchAmountOfTickets() {
-    fetch("http://localhost:5001/tickets/amount")
-      .then((res) => res.json())
-      .then((result) => setPageCount(result));
+        setTickets(result.data.tickets);
+        setTicketQuantity(result.data.ticket_quantity);
+      })
+      .then(getUsernames);
   }
 
   function handlePageTurn(event: ChangeEvent<unknown>, page: number): void {
@@ -241,7 +234,7 @@ const tickets = () => {
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
-            count={Math.ceil(pageCount / pageSize)}
+            count={Math.ceil(ticketQuantity / pageSize)}
             color="secondary"
             showFirstButton
             showLastButton
@@ -276,7 +269,7 @@ const tickets = () => {
       {tickets && (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Pagination
-            count={Math.round(pageCount / pageSize)}
+            count={Math.round(ticketQuantity / pageSize)}
             color="secondary"
             showFirstButton
             showLastButton
