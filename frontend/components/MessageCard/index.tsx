@@ -289,6 +289,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
         </Tooltip> */}
       </Box>
       {/* End of footer */}
+      {/* Start of related messages */}
       {relatedMessagesOpen &&
         ticket.detailed_context_messages.map((msg) => (
           <Card sx={{ width: "100%" }} key={msg.id}>
@@ -296,10 +297,14 @@ const MessageCard = ({ ticket, ticketLoader }) => {
               avatar={
                 <Avatar
                   src={msg.author.avatar_url}
-                  sx={{ width: 24, height: 24 }}
+                  sx={{ width: 30, height: 30 }}
                 ></Avatar>
               }
-              title={msg.author.name}
+              title={
+                <Typography color={msg.author.color}>
+                  msg.author.name
+                </Typography>
+              }
               subheader={msg.timestamp}
               action={
                 <IconButton href={message.msg_url} color="secondary">
@@ -324,6 +329,7 @@ const MessageCard = ({ ticket, ticketLoader }) => {
           {(relatedMessagesOpen ? "Hide" : "Show") + " context messages"}
         </Button>
       )}
+      {/* End of related messages */}
       <Snackbar
         open={snackBar.open}
         autoHideDuration={5000}

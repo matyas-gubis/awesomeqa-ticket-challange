@@ -1,3 +1,4 @@
+from app.Filters import Filters
 from app.repositories.ticket_repository import TicketRepository
 import uvicorn
 from fastapi import Depends, FastAPI
@@ -31,6 +32,13 @@ async def root():
     return "OK"
 
 
+@app.get("/users/usernames")
+async def get_usernames(
+        l_ticket_repository: TicketRepository = Depends(lambda: ticket_repository)):
+    usernames = l_ticket_repository.get_usernames()
+    return JSONResponse(usernames, status_code=200)
+
+
 @app.get("/tickets")
 async def get_tickets(
         limit: int = 20,
@@ -39,13 +47,14 @@ async def get_tickets(
     return JSONResponse(tickets, status_code=200)
 
 
-@app.get("/tickets/details")
+@app.post("/tickets/details")
 async def get_tickets_with_details(
-        status: Optional[str] = None,
         start: Optional[int] = 0,
         limit: int = 20,
-        l_ticket_repository: TicketRepository = Depends(lambda: ticket_repository)):
-    tickets = l_ticket_repository.get_tickets_with_details(status=status, start=start, limit=limit)
+        l_ticket_repository: TicketRepository = Depends(lambda: ticket_repository),
+        filters: Optional[Filters] = None):
+    print(filters)
+    tickets = l_ticket_repository.get_tickets_with_details(start=start, limit=limit, filters=filters)
     return JSONResponse(tickets, status_code=200)
 
 

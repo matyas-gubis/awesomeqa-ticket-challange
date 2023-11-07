@@ -1,6 +1,39 @@
 import json
+from datetime import datetime
 from typing import Optional
 import copy
+
+from app.Filters import Filters, Date
+
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+
+def username_filter(tickets: dict, usernames: list[str]) -> list[dict]:
+    new_tickets = []
+    for ticket in tickets:
+        if ticket["main_message"]["author"]["name"] in usernames:
+            new_tickets.append(ticket)
+    return new_tickets
+
+
+def status_filter(tickets: dict, status: str) -> list[dict]:
+    new_tickets = []
+    for ticket in tickets:
+        if ticket["status"] == status:
+            print(ticket["status"])
+            new_tickets.append(ticket)
+    return new_tickets
+
+
+def date_filter(tickets: dict, date: Date) -> list[dict]:
+    new_tickets = []
+    for ticket in tickets:
+        ticket_date = datetime.strptime(ticket["timestamp"].split('.')[0], DATE_FORMAT)
+        start_date = datetime.strptime(date.start, DATE_FORMAT) if date.start else ticket_date
+        end_date = datetime.strptime(date.end, DATE_FORMAT) if date.end else ticket_date
+        if start_date <= ticket_date <= end_date:
+            new_tickets.append(ticket)
+    return new_tickets
 
 
 class TicketRepository:
@@ -13,19 +46,25 @@ class TicketRepository:
         return self.data["tickets"][start: start + limit]
 
     def get_tickets_with_details(
-            self, status: Optional[str] = None,
+            self,
             start: Optional[int] = 0,
-            limit: Optional[int] = None) -> list[dict]:
+            limit: Optional[int] = None,
+            filters: Optional[Filters] = None) -> list[dict]:
         new_tickets = copy.deepcopy(self.data["tickets"])
         for ticket in new_tickets:
-            if status is not None:
-                if ticket['status'] != status:
-                    continue
             ticket["main_message"] = self.get_message_by_id(ticket["msg_id"])
             ticket["detailed_context_messages"] = []
             for message in ticket["context_messages"]:
                 ticket["detailed_context_messages"].append(self.get_message_by_id(message))
 
+        if filters is not None:
+            if filters.usernames and len(filters.usernames) > 0:
+                new_tickets = username_filter(new_tickets, filters.usernames)
+            if filters.status != "both":
+                new_tickets = status_filter(new_tickets, filters.status)
+            if filters.date.start or filters.date.end:
+                print(filters.date.start)
+                new_tickets = date_filter(new_tickets, filters.date)
         return new_tickets[start: start + limit]
 
     def get_message_by_id(self, msg_id: str) -> dict:
@@ -63,6 +102,13 @@ class TicketRepository:
                 return True
         return False
 
-
     def get_ticket_amount(self) -> int:
         return len(self.data["tickets"])
+
+    def get_usernames(self) -> list[str]:
+        usernames = []
+        for ticket in self.data["tickets"]:
+            currentUsername = self.get_message_by_id(ticket["msg_id"])["author"]["name"]
+            if currentUsername not in usernames:
+                usernames.append(currentUsername)
+        return usernames
