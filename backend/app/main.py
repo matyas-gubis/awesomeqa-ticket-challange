@@ -52,10 +52,11 @@ async def get_tickets_with_details(
         start: Optional[int] = 0,
         limit: int = 20,
         l_ticket_repository: TicketRepository = Depends(lambda: ticket_repository),
+        search: str = "",
         filters: Optional[Filters] = None):
     print(start, limit)
     print(filters)
-    tickets = l_ticket_repository.get_tickets_with_details(start=start, limit=limit, filters=filters)
+    tickets = l_ticket_repository.get_tickets_with_details(start=start, limit=limit, filters=filters, search=search)
     return JSONResponse(tickets, status_code=200)
 
 

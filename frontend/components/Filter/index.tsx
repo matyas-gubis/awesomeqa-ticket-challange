@@ -31,7 +31,14 @@ import { Status } from "../../interfaces/filter";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Search } from "@mui/icons-material";
 
-const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
+const Filter = ({
+  filter,
+  setFilter,
+  loadTickets,
+  pageSize,
+  setPageSize,
+  search,
+}) => {
   const [usernames, setUsernames] = useState([]);
   const [sorting, setSorting] = useState("3");
   const theme = useTheme();
@@ -121,6 +128,8 @@ const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
                 </InputAdornment>
               ),
             }}
+            value={search.search}
+            onChange={(v) => search.setSearch(v.target.value)}
             variant="outlined"
             color="secondary"
             sx={{ mb: 4 }}

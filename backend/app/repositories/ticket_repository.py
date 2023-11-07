@@ -50,6 +50,14 @@ def ticket_sorter(detailed_tickets, field_name, reverse) -> list[dict]:
             return detailed_tickets
 
 
+def search_tickets(tickets, text) -> list[dict]:
+    new_tickets = []
+    for ticket in tickets:
+        if text.lower() in ticket["main_message"]["content"].lower():
+            new_tickets.append(ticket)
+    return new_tickets
+
+
 class TicketRepository:
     def __init__(self, filepath: str):
         self.filepath = filepath
@@ -63,6 +71,7 @@ class TicketRepository:
             self,
             start: Optional[int] = 0,
             limit: Optional[int] = None,
+            search: Optional[str] = None,
             filters: Optional[Filters] = None) -> dict:
         response = {"tickets": copy.deepcopy(self.data["tickets"])}
         for ticket in response["tickets"]:
@@ -79,6 +88,10 @@ class TicketRepository:
             if filters.date.start or filters.date.end:
                 print(filters.date.start)
                 response["tickets"] = date_filter(response["tickets"], filters.date)
+
+        if search is not None and search != "":
+            response["tickets"] = search_tickets(response["tickets"], search)
+
         response["ticket_quantity"] = len(response["tickets"])
         response["tickets"] = ticket_sorter(response["tickets"],
                                             filters.sorting.field_name,

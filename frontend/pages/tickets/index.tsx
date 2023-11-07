@@ -31,6 +31,7 @@ const tickets = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [ticketPerPage, setTicketPerPage] = useState(20);
   const [filter, setFilter] = useState(emptyFilter);
+  const [search, setSearch] = useState("");
   const dummies = [
     { id: 1 },
     { id: 2 },
@@ -48,14 +49,14 @@ const tickets = () => {
   useEffect(() => {
     loadTickets();
     console.log(filter, ticketPerPage);
-  }, [filter, ticketPerPage, currentPage]);
+  }, [filter, ticketPerPage, currentPage, search]);
 
   function loadTickets() {
     axios
       .post(
         `http://localhost:5001/tickets/details?start=${
           ticketPerPage * (currentPage - 1)
-        }&limit=${ticketPerPage}`,
+        }&limit=${ticketPerPage}&search=${search}`,
         filter
       )
       .then((result) => {
@@ -73,6 +74,7 @@ const tickets = () => {
         loadTickets={loadTickets}
         pageSize={ticketPerPage}
         setPageSize={setTicketPerPage}
+        search={{ search, setSearch }}
       ></Filter>
 
       {/* Pagination */}
