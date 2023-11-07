@@ -1,10 +1,10 @@
-interface Filters {
+export interface Filters {
   usernames?: Array<string>;
   status?: Status;
   date?: CustomDate;
 }
 
-enum Status {
+export enum Status {
   OPEN = "open",
   CLOSED = "closed",
   BOTH = "both",
