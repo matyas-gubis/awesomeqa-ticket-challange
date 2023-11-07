@@ -6,6 +6,7 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -28,6 +29,7 @@ import {
 } from "../../constants/filters";
 import { Status } from "../../interfaces/filter";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Search } from "@mui/icons-material";
 
 const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
   const [usernames, setUsernames] = useState([]);
@@ -99,15 +101,30 @@ const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
               aria-label="Ticket status"
               sx={{ mb: 2 }}
             >
-              {(Object.keys(Status) as Array<keyof typeof Status>).map(
-                (key) => (
-                  <ContainedSecondaryToggleButton value="open" key={key}>
-                    {key}
-                  </ContainedSecondaryToggleButton>
-                )
-              )}
+              {Object.keys(Status).map((key) => (
+                <ContainedSecondaryToggleButton
+                  value={Status[key]}
+                  key={Status[key]}
+                >
+                  {Status[key]}
+                </ContainedSecondaryToggleButton>
+              ))}
             </ToggleButtonGroup>
           </FormGroup>
+          <TextField
+            id="search-textfield"
+            label="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+            color="secondary"
+            sx={{ mb: 4 }}
+          />
           {
             <Autocomplete
               multiple
@@ -187,7 +204,7 @@ const Filter = ({ filter, setFilter, loadTickets, pageSize, setPageSize }) => {
               ))}
             </Select>
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl fullWidth sx={{ mb: 4 }}>
             <InputLabel id="tickets-per-page-label" color="secondary">
               Tickets/page
             </InputLabel>
