@@ -42,3 +42,5 @@ In this challange I created a fullstack application, which gives discord server 
 - this structured data will be then saved as a new file
 - on any other server startup, this new - now structured - file will be read, thus saving a little computing power
 - there is also an option for saving the authors, messages and the tickets to a csv file
+
+![showcase](https://github.com/matyas-gubis/awesomeqa-ticket-challange/assets/60200282/97084306-8e28-4a2d-914c-61059c63077f)
