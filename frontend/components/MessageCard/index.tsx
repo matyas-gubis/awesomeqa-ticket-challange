@@ -286,7 +286,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
             <CardHeader
               avatar={
                 <Avatar
-                  src={msg.author.avatar_url}
+                  src={msg.author.avatar}
                   sx={{ width: 30, height: 30 }}
                 ></Avatar>
               }
@@ -295,9 +295,9 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
                   msg.author.name
                 </Typography>
               }
-              subheader={msg.timestamp}
+              subheader={new Date(msg.timestamp).toLocaleString()}
               action={
-                <IconButton href={message.url} color="secondary">
+                <IconButton href={msg.url} color="secondary">
                   <LaunchOutlinedIcon />
                 </IconButton>
               }
