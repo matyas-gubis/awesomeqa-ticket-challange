@@ -46,7 +46,7 @@ export const emptyFilter: Filters = {
   usernames: [],
   status: Status.BOTH,
   date: {
-    start: new Date(2023, 10, 1),
+    start: new Date(2023, 8, 1),
     end: new Date(),
   },
   sorting: getSortingOptionById(3).sorting,

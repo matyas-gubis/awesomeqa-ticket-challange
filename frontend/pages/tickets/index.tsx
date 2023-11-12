@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Pagination, Skeleton } from "@mui/material";
+import { Box, Grid, Pagination, Skeleton, Typography } from "@mui/material";
 import MessageCard from "../../components/MessageCard";
 import axios from "axios";
 import Filter from "../../components/Filter";
@@ -98,6 +98,7 @@ const tickets = () => {
                     ticket={ticket}
                     ticketLoader={loadTickets}
                     search={search}
+                    filter={{ filter, setFilter }}
                   ></MessageCard>
                 </Grid>
               ))
@@ -113,6 +114,11 @@ const tickets = () => {
                   />
                 </Grid>
               ))}
+          {tickets && tickets.length == 0 && (
+            <Typography variant="h4" align="center" mx="auto">
+              No tickets were found with the given filters.
+            </Typography>
+          )}
         </Grid>
 
         {/* Pagination */}

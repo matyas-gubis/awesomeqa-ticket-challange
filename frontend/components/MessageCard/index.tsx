@@ -27,7 +27,7 @@ import { getSnackBarById } from "../../constants/snackBars";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import { Message } from "../../types/ticket";
 
-const MessageCard = ({ ticket, ticketLoader, search }) => {
+const MessageCard = ({ ticket, ticketLoader, search, filter }) => {
   const message: Message = ticket.message;
   const theme = useTheme();
   const [snackBar, setSnackBar] = useState({
@@ -142,9 +142,19 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
         <Typography
           variant="subtitle1"
           sx={{
+            "&:hover": {
+              cursor: "pointer",
+              fontWeight: "700",
+            },
             my: "auto",
             color:
               ticket.status == "open" ? message.author.color : "primary.main",
+          }}
+          onClick={() => {
+            filter.setFilter({
+              ...filter.filter,
+              usernames: [message.author.name],
+            });
           }}
         >
           {message.author.name}

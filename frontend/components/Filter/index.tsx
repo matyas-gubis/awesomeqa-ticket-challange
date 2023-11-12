@@ -123,7 +123,7 @@ const Filter = ({
           </FormGroup>
           <TextField
             id="search-textfield"
-            label="Search"
+            label="Search in message-content"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
