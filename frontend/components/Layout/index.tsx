@@ -5,11 +5,9 @@ import { Container } from "@mui/material";
 const Layout = ({ children }: JSX.ElementChildrenAttribute) => {
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <HomeHeader />
-        <>
-        {children}
-        </>
+        <>{children}</>
         <Footer />
       </Container>
     </>

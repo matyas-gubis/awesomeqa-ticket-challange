@@ -58,69 +58,78 @@ const tickets = () => {
   }
 
   return (
-    <Box mt={5}>
-      <Filter
-        filter={filter}
-        setFilter={setFilter}
-        loadTickets={loadTickets}
-        pageSize={ticketPerPage}
-        setPageSize={setTicketPerPage}
-        search={{ search, setSearch }}
-      ></Filter>
-
-      {/* Pagination */}
-      {tickets && (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination
-            count={Math.ceil(ticketQuantity / ticketPerPage)}
-            color="secondary"
-            showFirstButton
-            showLastButton
-            page={currentPage}
-            onChange={(e, page) => setCurrentPage(page)}
-          ></Pagination>
-        </Box>
-      )}
-
-      <Grid container spacing={2} my={3}>
-        {tickets
-          ? tickets.map((ticket) => (
-              <Grid item xs={12} key={ticket.id}>
-                <MessageCard
-                  ticket={ticket}
-                  ticketLoader={loadTickets}
-                  search={search}
-                ></MessageCard>
-              </Grid>
-            ))
-          : dummies.map((dummy) => (
-              <Grid item xs={12} key={dummy.id}>
-                <Skeleton
-                  variant="rectangular"
-                  animation="wave"
-                  height={240}
-                  sx={{
-                    borderRadius: 1,
-                  }}
-                />
-              </Grid>
-            ))}
+    <Grid container spacing={2} mt={5}>
+      <Grid item lg={4}>
+        <Filter
+          filter={filter}
+          setFilter={setFilter}
+          loadTickets={loadTickets}
+          pageSize={ticketPerPage}
+          setPageSize={setTicketPerPage}
+          search={{ search, setSearch }}
+        ></Filter>
       </Grid>
+      <Grid item lg={8}>
+        {/* Pagination */}
+        {tickets && (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination
+              count={Math.ceil(ticketQuantity / ticketPerPage)}
+              color="secondary"
+              showFirstButton
+              showLastButton
+              page={currentPage}
+              onChange={(e, page) => setCurrentPage(page)}
+            ></Pagination>
+          </Box>
+        )}
 
-      {/* Pagination */}
-      {tickets && (
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination
-            count={Math.ceil(ticketQuantity / ticketPerPage)}
-            color="secondary"
-            showFirstButton
-            showLastButton
-            page={currentPage}
-            onChange={(e, page) => setCurrentPage(page)}
-          ></Pagination>
-        </Box>
-      )}
-    </Box>
+        <Grid
+          container
+          spacing={2}
+          my={3}
+          p={3}
+          sx={{ maxHeight: "60vh", overflow: "auto" }}
+        >
+          {tickets
+            ? tickets.map((ticket) => (
+                <Grid item xs={12} key={ticket.id}>
+                  <MessageCard
+                    ticket={ticket}
+                    ticketLoader={loadTickets}
+                    search={search}
+                  ></MessageCard>
+                </Grid>
+              ))
+            : dummies.map((dummy) => (
+                <Grid item xs={12} key={dummy.id}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={240}
+                    sx={{
+                      borderRadius: 1,
+                    }}
+                  />
+                </Grid>
+              ))}
+        </Grid>
+
+        {/* Pagination */}
+        {tickets && (
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination
+              count={Math.ceil(ticketQuantity / ticketPerPage)}
+              color="secondary"
+              showFirstButton
+              showLastButton
+              page={currentPage}
+              onChange={(e, page) => setCurrentPage(page)}
+            ></Pagination>
+          </Box>
+        )}
+      </Grid>
+    </Grid>
   );
 };
 
