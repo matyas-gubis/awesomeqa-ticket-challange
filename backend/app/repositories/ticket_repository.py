@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
+from pytz import utc
 
 from app.Author import Author
 from app.Filters import Filters, Date
@@ -26,9 +27,9 @@ def date_filter(tickets: list[Ticket], date: Date) -> list[Ticket]:
     new_tickets = []
     for ticket in tickets:
         ticket_date = ticket.timestamp
-        start_date = date.start if date.start else ticket_date
-        end_date = date.end if date.end else ticket_date
-        if start_date <= ticket_date <= end_date:
+        start_date = date.start if date.start else utc.localize(ticket_date)
+        end_date = date.end if date.end else utc.localize(ticket_date)
+        if start_date <= utc.localize(ticket_date)  <= end_date:
             new_tickets.append(ticket)
     return new_tickets
 

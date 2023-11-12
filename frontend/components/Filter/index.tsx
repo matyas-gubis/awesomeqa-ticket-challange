@@ -30,6 +30,7 @@ import {
 import { Status } from "../../interfaces/filter";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Search } from "@mui/icons-material";
+import dayjs from "dayjs";
 
 const Filter = ({
   filter,
@@ -168,13 +169,13 @@ const Filter = ({
             <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1 }}>
               <DateTimePicker
                 label="Start date"
-                value={filter.date.start}
+                value={dayjs(filter.date.start)}
                 onChange={(newValue: any) => {
                   let newFilters = {
                     ...filter,
                     date: {
                       ...filter.date,
-                      start: newValue.format("YYYY-MM-DD HH:mm:ss"),
+                      start: newValue,
                     },
                   };
                   setFilter(newFilters);
@@ -182,13 +183,13 @@ const Filter = ({
               />
               <DateTimePicker
                 label="End date"
-                value={filter.date.end}
+                value={dayjs(filter.date.end)}
                 onChange={(newValue: any) => {
                   let newFilters = {
                     ...filter,
                     date: {
                       ...filter.date,
-                      end: newValue.format("YYYY-MM-DD HH:mm:ss"),
+                      end: newValue,
                     },
                   };
                   setFilter(newFilters);

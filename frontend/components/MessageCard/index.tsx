@@ -292,7 +292,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
               }
               title={
                 <Typography color={msg.author.color}>
-                  msg.author.name
+                  {msg.author.name}
                 </Typography>
               }
               subheader={new Date(msg.timestamp).toLocaleString()}

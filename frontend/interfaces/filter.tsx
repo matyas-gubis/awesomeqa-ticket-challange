@@ -17,8 +17,8 @@ export enum Status {
 }
 
 interface CustomDate {
-  start?: string;
-  end?: string;
+  start?: Date;
+  end?: Date;
 }
 
 export enum FieldNames {
