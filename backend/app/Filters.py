@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class Date(BaseModel):
-    start: str | None = None
-    end: str | None = None
+    start: datetime | None = None
+    end: datetime | None = None
 
 
 class SortBy(BaseModel):

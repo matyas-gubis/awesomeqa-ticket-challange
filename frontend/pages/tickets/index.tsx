@@ -4,9 +4,10 @@ import MessageCard from "../../components/MessageCard";
 import axios from "axios";
 import Filter from "../../components/Filter";
 import { emptyFilter } from "../../constants/filters";
+import { Ticket } from "../../types/ticket";
 
 const tickets = () => {
-  const [tickets, setTickets] = useState(null);
+  const [tickets, setTickets] = useState<Array<Ticket>>(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [ticketPerPage, setTicketPerPage] = useState(20);
@@ -41,9 +42,16 @@ const tickets = () => {
       )
       .then((result) => {
         console.log(result.data);
-        setTickets(result.data.tickets);
+        let newTickets: Array<Ticket> = [];
+        result.data.tickets.forEach((ticket) =>
+          newTickets.push({ ...ticket, timestamp: new Date(ticket.timestamp) })
+        );
+        console.log(newTickets);
+        setTickets(newTickets);
         setTicketQuantity(result.data.ticket_quantity);
-        if (currentPage > Math.ceil(ticketQuantity / ticketPerPage)) {
+        if (
+          currentPage > Math.ceil(result.data.ticket_quantity / ticketPerPage)
+        ) {
           setCurrentPage(1);
         }
       });

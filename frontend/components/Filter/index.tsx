@@ -52,12 +52,14 @@ const Filter = ({
       backgroundColor: theme.palette.primary.main,
     },
   }));
+
   function fetchUsernames() {
     fetch("http://localhost:5001/users/usernames")
       .then((r) => r.json())
       .then((result) => setUsernames(result))
       .catch((err) => console.warn(err));
   }
+
   function handleSorting(event: SelectChangeEvent): void {
     setSorting(event.target.value);
     let newFilters = {

@@ -5,7 +5,6 @@ import {
   Avatar,
   Box,
   Button,
-  ButtonPropsVariantOverrides,
   Card,
   CardContent,
   CardHeader,
@@ -16,7 +15,6 @@ import {
   DialogTitle,
   IconButton,
   Snackbar,
-  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -27,9 +25,10 @@ import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
 import axios from "axios";
 import { getSnackBarById } from "../../constants/snackBars";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import { Message } from "../../types/ticket";
 
 const MessageCard = ({ ticket, ticketLoader, search }) => {
-  const message = ticket.main_message;
+  const message: Message = ticket.message;
   const theme = useTheme();
   const [snackBar, setSnackBar] = useState({
     open: false,
@@ -138,10 +137,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
         }}
       >
         {/* Avatar */}
-        <Avatar
-          src={message.author.avatar_url}
-          sx={{ width: 48, height: 48 }}
-        />
+        <Avatar src={message.author.avatar} sx={{ width: 48, height: 48 }} />
         {/* Name */}
         <Typography
           variant="subtitle1"
@@ -161,7 +157,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
             color: ticket.status == "open" ? "secondary.main" : "primary.main",
           }}
         >
-          {message.timestamp}
+          {new Date(message.timestamp).toLocaleString()}
         </Typography>
         {/* Status */}
         {ticket.status == "open" ? (
@@ -272,7 +268,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
           variant={ticket.status == "open" ? "contained" : "outlined"}
           color="secondary"
           startIcon={<LaunchOutlinedIcon />}
-          href={message.msg_url}
+          href={message.url}
         >
           Open in Discord
         </Button>
@@ -285,7 +281,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
       {/* End of footer */}
       {/* Start of related messages */}
       {relatedMessagesOpen &&
-        ticket.detailed_context_messages.map((msg) => (
+        ticket.context_messages.map((msg) => (
           <Card sx={{ width: "100%" }} key={msg.id}>
             <CardHeader
               avatar={
@@ -301,7 +297,7 @@ const MessageCard = ({ ticket, ticketLoader, search }) => {
               }
               subheader={msg.timestamp}
               action={
-                <IconButton href={message.msg_url} color="secondary">
+                <IconButton href={message.url} color="secondary">
                   <LaunchOutlinedIcon />
                 </IconButton>
               }
